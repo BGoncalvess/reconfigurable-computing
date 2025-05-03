@@ -1,84 +1,63 @@
-library ieee;
-use ieee.std_logic_1164.all;
+-- Testbench created online at:
+--   https://www.doulos.com/knowhow/perl/vhdl-testbench-creation-using-perl/
+-- Copyright Doulos Ltd
 
-entity tb_tp1 is
-end entity;
+library IEEE;
+use IEEE.Std_logic_1164.all;
+use IEEE.Numeric_Std.all;
 
-architecture sim of tb_tp1 is
+entity tp1_tb is
+end;
 
-    -- Component declaration
-    component tp1
-        port (
-            rst : in std_logic;
-            clk : in std_logic;
-            x   : in std_logic;
-            y   : out std_logic
-        );
-    end component;
+architecture bench of tp1_tb is
 
-    -- Signals to connect to DUT
-    signal clk : std_logic := '0';
-    signal rst : std_logic := '1';
-    signal x   : std_logic := '0';
-    signal y   : std_logic;
+  component tp1
+      port(
+          rst : in std_logic;
+          clk : in std_logic;
+          x   : in std_logic;
+          y   : out std_logic
+      );
+  end component;
 
-    -- Clock period
-    constant clk_period : time := 10 ns;
+  signal rst: std_logic;
+  signal clk: std_logic;
+  signal x: std_logic;
+  signal y: std_logic ;
+
+  constant clock_period: time := 10 ns;
+  signal stop_the_clock: boolean;
 
 begin
 
-    -- Instantiate the DUT
-    uut: tp1
-        port map (
-            rst => rst,
-            clk => clk,
-            x   => x,
-            y   => y
-        );
+  uut: tp1 port map ( rst => rst,
+                      clk => clk,
+                      x   => x,
+                      y   => y );
 
-    -- Clock process
-    clk_process : process
-    begin
-        while true loop
-            clk <= '0';
-            wait for clk_period / 2;
-            clk <= '1';
-            wait for clk_period / 2;
-        end loop;
-    end process;
+  stimulus: process
+  begin
 
-    -- Stimulus process
-    stim_proc: process
-    begin
-        -- Apply reset
-        wait for 20 ns;
-        rst <= '0';  -- Release reset
+    -- Put initialisation code here
 
-        -- Apply sequence "1 0 0 1 0 1"
-        -- Wait for rising edge to apply each bit
-        wait for clk_period;
-        x <= '1';  -- 1
+    rst <= '1';
+    wait for 5 ns;
+    rst <= '0';
+    wait for 5 ns;
 
-        wait for clk_period;
-        x <= '0';  -- 0
+    -- Put test bench stimulus code here
 
-        wait for clk_period;
-        x <= '0';  -- 0
+    stop_the_clock <= true;
+    wait;
+  end process;
 
-        wait for clk_period;
-        x <= '1';  -- 1
+  clocking: process
+  begin
+    while not stop_the_clock loop
+      clk <= '0', '1' after clock_period / 2;
+      wait for clock_period;
+    end loop;
+    wait;
+  end process;
 
-        wait for clk_period;
-        x <= '0';  -- 0
-
-        wait for clk_period;
-        x <= '1';  -- 1
-
-        -- Wait a bit to see output
-        wait for 50 ns;
-
-        -- End simulation
-        wait;
-    end process;
-
-end architecture;
+end;

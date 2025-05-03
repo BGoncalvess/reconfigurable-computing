@@ -16,7 +16,6 @@ architecture tp1 of tp1 is
     signal y_reg : std_logic;
 begin
 
-    -- Sequential logic
     process(clk, rst)
     begin
         if rst = '1' then
@@ -26,7 +25,6 @@ begin
         end if;
     end process;
 
-    -- Next state logic
     process(state, x)
     begin
         case state is
@@ -40,7 +38,6 @@ begin
         end case;
     end process;
 
-    -- Output logic
     y_reg <= '1' when state = s6 else '0';
     y <= y_reg;
 
