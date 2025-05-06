@@ -26,7 +26,7 @@ architecture bench of tp1_tb is
   signal y: std_logic ;
 
   constant clock_period: time := 10 ns;
-  signal stop_the_clock: boolean;
+  signal stop_the_clock: boolean := false;
 
 begin
 
@@ -38,7 +38,7 @@ begin
   stimulus: process
   begin
 
-    -- Put initialisation code here
+    -- Put initialization code here
 
     rst <= '1';
     wait for 5 ns;
@@ -46,6 +46,41 @@ begin
     wait for 5 ns;
 
     -- Put test bench stimulus code here
+    x <= '0'; -- Initial input
+    wait for 10 ns;
+
+    x <= '1'; -- Transition to state s1
+    wait for 10 ns;
+
+    x <= '0'; -- Transition to state s2
+    wait for 10 ns;
+
+    x <= '1'; -- Transition back to state s1
+    wait for 10 ns;
+
+    x <= '0'; -- Transition to state s3
+    wait for 10 ns;
+
+    x <= '0'; -- Transition to state s0
+    wait for 10 ns;
+
+    x <= '1'; -- Transition to state s1
+    wait for 10 ns;
+
+    x <= '0'; -- Transition to state s2
+    wait for 10 ns;
+
+    x <= '0'; -- Transition to state s3
+    wait for 10 ns;
+
+    x <= '1'; -- Transition to state s4
+    wait for 10 ns;
+
+    x <= '0'; -- Transition to state s5
+    wait for 10 ns;
+
+    x <= '1'; -- Transition to state s6 (output y should be '1')
+    wait for 10 ns;
 
     stop_the_clock <= true;
     wait;
