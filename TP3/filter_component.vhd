@@ -28,7 +28,7 @@ architecture Behavioral of filter_component is
     constant DATA_WIDTH : integer := 16;
 
     -- FSM States
-    type state_type is (INIT, CALC, DONE);
+    type state_type is (INIT, CALC, DONEE);
     signal state : state_type := INIT;
 
     -- Signals for ROM addresses
@@ -40,10 +40,9 @@ architecture Behavioral of filter_component is
     signal signal_sample : signed(DATA_WIDTH-1 downto 0);
 
     -- Storage for coeffs and samples in arrays
-    type sample_array is array(0 to FILTER_SIZE) of signed(DATA_WIDTH-1 downto 0);
-    signal coeff_array : sample_array := (others => (others => '0'));
-    signal sample_array : sample_array := (others => (others => '0'));
-
+    type sample_array_type is array(0 to FILTER_SIZE) of signed(DATA_WIDTH-1 downto 0);
+    signal coeff_array : sample_array_type := (others => (others => '0'));
+    signal sample_array : sample_array_type := (others => (others => '0'));
     -- For convolution calculation
     signal acc : signed((DATA_WIDTH*2)-1 downto 0) := (others => '0');
     signal index : integer range 0 to SIGNAL_SIZE-FILTER_SIZE := 0;
@@ -52,22 +51,22 @@ architecture Behavioral of filter_component is
     type ram_type is array(0 to SIGNAL_SIZE-FILTER_SIZE) of signed((DATA_WIDTH*2)-1 downto 0);
     signal output_ram : ram_type := (others => (others => '0'));
 
-begin
     -- Instanciação dos módulos ROM (coeficientes + sinal)
-
-    component filter_rom is
+    component filter_rom
         Port (
             addr     : in unsigned(ADDR_WIDTH_FILTER-1 downto 0);
             data_out : out signed(DATA_WIDTH-1 downto 0)
         );
     end component;
 
-    component signal_rom is
+    component signal_rom
         Port (
             addr     : in unsigned(ADDR_WIDTH_SIGNAL-1 downto 0);
             data_out : out signed(DATA_WIDTH-1 downto 0)
         );
     end component;
+
+begin
 
     u_filter_rom: filter_rom
         port map (
@@ -81,7 +80,7 @@ begin
             data_out => signal_sample
         );
 
-    -- FSM do filtro (INIT, CALC, DONE), usando “en” para habilitar as etapas
+    -- FSM do filtro (INIT, CALC, DONEE), usando “en” para habilitar as etapas
 
     process(clk, rst)
         variable conv_acc : signed((DATA_WIDTH*2)-1 downto 0);
@@ -124,7 +123,7 @@ begin
 
                         -- Prepare for next sample: shift samples and read next
                         if index = SIGNAL_SIZE - FILTER_SIZE then
-                            state <= DONE;
+                            state <= DONEE;
                             done <= '1';
                         else
                             index <= index + 1;
@@ -133,7 +132,7 @@ begin
                             signal_addr <= signal_addr + 1;
                         end if;
 
-                    when DONE =>
+                    when DONEE =>
                         -- Filter finished, do nothing or wait for reset
                         null;
                 end case;

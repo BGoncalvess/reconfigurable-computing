@@ -16,9 +16,9 @@ end write_on_file;
 
 architecture Behavioral of write_on_file is
     file output_file : text open write_mode is "D:\reconfigurable-computing\TP3\scripts\filtered_output.txt";
-    variable line_out : line;
 begin
     process(clk)
+        variable line_out : line;
     begin
         if rising_edge(clk) then
             if enable = '1' then
