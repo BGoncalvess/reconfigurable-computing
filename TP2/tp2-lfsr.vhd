@@ -3,33 +3,33 @@ use ieee.std_logic_1164.all;
 
 entity tp2_lfsr is
     port(
-        seed : in std_logic_vector(7 downto 0);
-        en   : in std_logic;
         clk  : in std_logic;
         rst  : in std_logic;
-        key  : out std_logic
+        en   : in std_logic;
+        seed : in std_logic_vector(7 downto 0);
+        out_key  : out std_logic
     );
-end entity tp2_lfsr;
+end tp2_lfsr;
 
 
-architecture tp2_lfsr of tp2_lfsr is
-    signal lfsr: std_logic_vector(7 downto 0);
-    signal first_bit: std_logic;
+architecture Behavioral  of tp2_lfsr is
+    signal lfsr_state: std_logic_vector(7 downto 0);
+    signal first_bit: std_logic := '0';
 
     begin
-        process(clk, rst)
+        process(clk, rst, en)
             begin
                 if rst = '1' then
                     lfsr <= seed;
                     first_bit <= '0';
                 elsif rising_edge(clk) then
                     if en = '1' then -- if enable is 1, shift all to the right
-                        first_bit <= lfsr(0) xor lfsr(4) xor lfsr(7);
-                        lfsr <= lfsr(6 downto 0) & first_bit;
+                        first_bit <= state(7) xor state(5) xor state(4) xor state(3);
+                        lfsr_state <= lfsr_state(6 downto 0) & first_bit; --shift left and insert fb at LSB
                     end if;
                 end if;
         end process;
 
-        key <= lfsr(0);
+        out_key <= lfsr_state(7);
             
 end architecture tp2_lfsr;

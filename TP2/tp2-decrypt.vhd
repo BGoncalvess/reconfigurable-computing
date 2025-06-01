@@ -3,54 +3,49 @@ use ieee.std_logic_1164.all;
 
 entity tp2_decrypt is
     port(
-        key: in std_logic_vector (7 downto 0); -- pass the seed to the LFSR
-        msg: in std_logic;
-        rst: in std_logic;
-        clk: in std_logic;
-        en: in std_logic;
-        cypher: out std_logic;
+        bit_in : in std_logic;                  -- Input bit to decrypt 
+        rst    : in std_logic;
+        clk    : in std_logic;
+        en     : in std_logic;
+        bit_out  : out std_logic                   -- Output decrypted bit
     );
-
-end entity tp2_decrypt;
+end tp2_decrypt;
 
 architecture Behavioral of tp2_decrypt is
-
-    component tp2_lfsr is
-
-        port(
-            seed: in std_std_logic_vector (7 downto 0);
-            en: in std_logic;
-            clk: in std_logic;
-            rst: in std_logic;
-            key: out std_logic
-        );
-
-    end component tp2_lfsr;
-
     signal key_bit : std_logic;
 
-    begin
-        lfsr_inst: tp2_lfsr
-            port map(
-                seed => seed,
-                en => en,
-                clk => clk,
-                rst => rst,
-                key => key_bit
-            );
-        
-        -- Processo de desencriptação (XOR com a key stream)
-        process(clk, rst)
-        begin
-            if rst = '1' then
-                cypher <= '0';
-            elsif rising_edge(clk) then
-                if en = '1' then
-                    cypher <= msg xor key_bit;
-                else
-                    cypher <= msg;
-                end if;
-            end if;
-        end process;
+    component tp2_lfsr
+        port(
+            rst  : in std_logic;
+            en   : in std_logic;
+            clk  : in std_logic;
+            seed : in std_logic_vector(7 downto 0);
+            out_key  : out std_logic
+        );
+    end component;
 
-    end architecture Behavioral;
+    const seed : std_logic_vector(7 downto 0) := "10101010";
+
+begin
+
+    lfsr_instance: tp2_lfsr
+        port map(
+            rst  => rst,
+            en   => en,
+            clk  => clk,
+            seed => seed,
+            out_key  => key_bit
+        );
+
+    process(clk, rst, en, key_bit)
+    begin
+        if rst = '1' then
+            cypher <= '0';
+        elsif rising_edge(clk) then
+            if en = '1' then
+                cypher <= msg xor key_bit;
+            end if;
+        end if;
+    end process;
+
+end architecture;

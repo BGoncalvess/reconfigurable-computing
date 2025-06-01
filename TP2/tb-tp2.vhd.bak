@@ -1,0 +1,103 @@
+-- tb_stream_cipher.vhd
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity tb_stream_cipher is
+end entity;
+
+architecture sim of tb_stream_cipher is
+
+    constant clk_period : time := 10 ns;
+
+    signal clk     : std_logic := '0';
+    signal rst     : std_logic := '1';
+    signal en      : std_logic := '0';
+
+    signal seed    : std_logic_vector(7 downto 0) := "10101010";
+
+    -- Data signals
+    signal plain_bit   : std_logic := '0';
+    signal cipher_bit  : std_logic;
+    signal decrypt_bit : std_logic;
+
+    -- Internal message (plain text)
+    type msg_array is array (0 to 7) of std_logic;
+    signal message : msg_array := ("1", "0", "1", "1", "0", "0", "1", "1");
+
+    signal bit_index : integer := 0;
+
+    -- Encryptor component
+    component tp2_decrypt is
+        port(
+            seed   : in std_logic_vector(7 downto 0);
+            msg    : in std_logic;
+            rst    : in std_logic;
+            clk    : in std_logic;
+            en     : in std_logic;
+            cypher : out std_logic
+        );
+    end component;
+
+    -- Alias
+    signal enc_out : std_logic;
+    signal dec_out : std_logic;
+
+begin
+
+    -- Clock generator
+    clk_process: process
+    begin
+        while true loop
+            clk <= '0';
+            wait for clk_period / 2;
+            clk <= '1';
+            wait for clk_period / 2;
+        end loop;
+    end process;
+
+    -- Encryptor: XOR original msg with key stream
+    encryptor: tp2_decrypt
+        port map(
+            seed   => seed,
+            msg    => plain_bit,
+            rst    => rst,
+            clk    => clk,
+            en     => en,
+            cypher => enc_out
+        );
+
+    -- Decryptor: XOR ciphertext with same key stream
+    decryptor: tp2_decrypt
+        port map(
+            seed   => seed,
+            msg    => enc_out,
+            rst    => rst,
+            clk    => clk,
+            en     => en,
+            cypher => dec_out
+        );
+
+    -- Test sequence
+    stim_proc: process
+    begin
+        wait for 20 ns;
+        rst <= '0';
+        en <= '1';
+
+        for i in 0 to 7 loop
+            bit_index <= i;
+            plain_bit <= message(i);
+            wait for clk_period;
+        end loop;
+
+        en <= '0';
+        wait;
+
+    end process;
+
+    -- Outputs
+    cipher_bit  <= enc_out;
+    decrypt_bit <= dec_out;
+
+end architecture;

@@ -1,3 +1,5 @@
+# Autor: Bruno Gonçalves - a74528
+
 ## TP 1 - Detetor de Sequencias
 
 ### 1. Introdução
