@@ -3,19 +3,17 @@
 ## TP 1 - Detetor de Sequencias
 
 ### 1. Introdução
-
-- Este trabalho tem como objetivo a implementação de uma **Máquina de Estados Finitos (FSM)** capaz de reconhecer a sequência de bits **100101**.
+- Este trabalho tem como objetivo a implementação de uma **Máquina de Estados Finitos (FSM)** capaz de reconhecer uma sequência de bits **100101**.
 
 - A FSM é composta por uma entidade que inclui os seguintes sinais:
     - **clk** - Sinal de relógio
     - **rst** - Sinal de reset
     - **x** - Sinal de entrada
     - **y** - Sinal de saída
-![Entidae3W](./images/entity.jpg)
 
-### 2. Desenvolvimento
+![Entidae3](./images/entity.jpg)
 
-### 2.1 Arquitetura
+### 2 Arquitetura
 
 - A *FSM* foi implementada com base na seguinte arquitetura:
 
@@ -35,7 +33,6 @@ architecture tp1 of tp1 is
     signal y_reg : std_logic;
 ```
 
-<!-- Screenshot da simulação -->
-
-### 3. Conclusão
+### Waveform Simulação
+![Waveform](./images/waveform.png)
 

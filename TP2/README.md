@@ -42,5 +42,5 @@ A arquitetura é composta por:
 ![Waveform Simulação](./images/waveform.png)
 
 ### Conclusão
-- Em resumo, esta LFSR, permite gerar sequências pseudo-aleatórias de forma eficiente, pois as operações XOR são distribuídas ao longo dos diversos estágios do registrador, tornando o circuito mais simples e rápido (não passam pelo o input).
+Em resumo, esta LFSR, permite gerar sequências pseudo-aleatórias de forma eficiente, pois as operações XOR são distribuídas ao longo dos diversos estágios do registrador, tornando o circuito mais simples e rápido (não passam pelo o input).
 
