@@ -10,13 +10,13 @@ end tb_main;
 architecture behavior of tb_main is
 
     -- Component declaration for the unit under test (UUT)
-    component chiper
+    component tp2_decrypt
         Port (
             bit_in : in std_logic;
             clk: in std_logic;
             rst: in std_logic;
             en: in std_logic;
-            bit_out : out std_logic
+            cypher : out std_logic
         );
     end component;
 
@@ -28,26 +28,26 @@ architecture behavior of tb_main is
     signal en_decripter     : std_logic := '0';
     signal clk             : std_logic := '0';
     signal bit_encripted        : std_logic;
-    signal bit_out         : std_logic;
+    signal cypher         : std_logic;
 
     constant clk_period : time := 10 ns;
 begin
     -- Instantiate the Unit Under Test (UUT)
-    encripter: chiper port map (
+    encripter: tp2_decrypt port map (
         rst => rst,
         en => en_encripter,
         clk => clk,
         bit_in => bit_in,
-        bit_out => bit_encripted
+        cypher => bit_encripted
     );
 
 
-    decripter: chiper port map (
+    decripter: tp2_decrypt port map (
         rst => rst,
         en => en_decripter,
         clk => clk,
         bit_in => bit_encripted,
-        bit_out => bit_out
+        cypher => cypher
     );
 
 

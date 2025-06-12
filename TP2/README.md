@@ -2,11 +2,11 @@
 
 ## TP 2 - Encriptação em stream LFSR
 
-### 1. Introdução
+### Introdução
 - Este trabalho tem como objetivo desenvolver uma arquitetura em VHDL de um desencriptador de dados em stream. 
 - O seu funcionamento baseia-se na utilização de uma `LFSR` (Linear Feedback Shift Register) para gerar uma sequência pseudo-aleatória que é utilizada para desencriptar os dados recebidos.
 
-### 2. Arquitetura
+### Arquitetura
 
 ![Architecture](./images/TP2.png)
 ![Architecture](./images/count.png)
@@ -33,16 +33,14 @@ A arquitetura é composta por:
         - `clk`: Sinal de clock
         - `en`: Sinal de ativação
     - Saídas
-        - `data_out`: Dados desencriptados
+        - `cyper`: Dados desencriptados
 
-### 3. Desenvolvimento
+### Desenvolvimento
 - Tendo em conta a arquitetura já definida, o desenvolvimento do código VHDL é realizado em duas partes: a LFSR e o desencriptador.
-#### 3.1 LFSR - Entidade
-```vhdl
 
-```
+### Simulação
+![Waveform Simulação](./images/waveform.png)
 
-<!-- Screenshot da simulação -->
-### 4. Conclusão
+### Conclusão
 - Em resumo, esta LFSR, permite gerar sequências pseudo-aleatórias de forma eficiente, pois as operações XOR são distribuídas ao longo dos diversos estágios do registrador, tornando o circuito mais simples e rápido (não passam pelo o input).
 

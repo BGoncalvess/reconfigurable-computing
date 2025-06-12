@@ -44,7 +44,7 @@ begin
     stim_proc : process
     begin
         rst <= '1';
-        wait for 15ns;
+        wait for clk_period;
         rst <= '0';
         wait for clk_period;
 
@@ -60,9 +60,21 @@ begin
         x <= '0';
         wait for clk_period;
         x <= '1';
+        -- match: "10010100101"
+        wait for clk_period;
+        x <= '0';
+        wait for clk_period;
+        x <= '0';
+        wait for clk_period;
+        x <= '1';
+        wait for clk_period;
+        x <= '0';
+        wait for clk_period;
+        x <= '1';
+        
 
-        x <= '0'; wait for 50 ns;
+	wait for clk_period;
 
-        wait;
+        assert false report "End of simulation" severity failure;
     end process;
 end architecture test;

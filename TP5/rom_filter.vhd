@@ -2,14 +2,14 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
  
-entity filter_rom is
+entity controller_out_rom is
     Port (
         addr : in unsigned(5 downto 0);
         data_out : out signed(15 downto 0)
     );
-end filter_rom;
+end controller_out_rom;
  
-architecture Behavioral of filter_rom is
+architecture Behavioral of controller_out_rom is
  
     type coeff_array is array (0 to 50) of signed(15 downto 0);
  

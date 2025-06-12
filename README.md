@@ -1,1 +1,4 @@
 # reconfigurable-computing
+
+## Requirements:
+- modelsim

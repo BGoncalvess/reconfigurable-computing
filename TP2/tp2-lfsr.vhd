@@ -12,7 +12,7 @@ entity tp2_lfsr is
 end tp2_lfsr;
 
 
-architecture Behavioral  of tp2_lfsr is
+architecture Behavioral of tp2_lfsr is
     signal lfsr_state: std_logic_vector(7 downto 0);
     signal first_bit: std_logic := '0';
 
@@ -20,11 +20,11 @@ architecture Behavioral  of tp2_lfsr is
         process(clk, rst, en)
             begin
                 if rst = '1' then
-                    lfsr <= seed;
+                    lfsr_state <= seed;
                     first_bit <= '0';
                 elsif rising_edge(clk) then
                     if en = '1' then -- if enable is 1, shift all to the right
-                        first_bit <= state(7) xor state(5) xor state(4) xor state(3);
+                        first_bit <= lfsr_state(7) xor lfsr_state(5) xor lfsr_state(4) xor lfsr_state(3);
                         lfsr_state <= lfsr_state(6 downto 0) & first_bit; --shift left and insert fb at LSB
                     end if;
                 end if;
@@ -32,4 +32,4 @@ architecture Behavioral  of tp2_lfsr is
 
         out_key <= lfsr_state(7);
             
-end architecture tp2_lfsr;
+end Behavioral;

@@ -7,12 +7,13 @@ entity tp2_decrypt is
         rst    : in std_logic;
         clk    : in std_logic;
         en     : in std_logic;
-        bit_out  : out std_logic                   -- Output decrypted bit
+        cypher  : out std_logic                   -- Output decrypted bit
     );
 end tp2_decrypt;
 
 architecture Behavioral of tp2_decrypt is
     signal key_bit : std_logic;
+    constant seed : std_logic_vector(7 downto 0) := "10000000";
 
     component tp2_lfsr
         port(
@@ -24,11 +25,8 @@ architecture Behavioral of tp2_decrypt is
         );
     end component;
 
-    const seed : std_logic_vector(7 downto 0) := "10101010";
-
 begin
-
-    lfsr_instance: tp2_lfsr
+	fsr_instance: tp2_lfsr
         port map(
             rst  => rst,
             en   => en,
@@ -43,7 +41,7 @@ begin
             cypher <= '0';
         elsif rising_edge(clk) then
             if en = '1' then
-                cypher <= msg xor key_bit;
+                cypher <= bit_in xor key_bit;
             end if;
         end if;
     end process;

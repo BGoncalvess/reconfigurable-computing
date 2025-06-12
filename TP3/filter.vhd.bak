@@ -1,0 +1,121 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use ieee.numeric_std.all;
+
+entity filter_component is
+  Port (
+    clk      : in  std_logic;
+    reset    : in  std_logic;
+    en       : in  std_logic;
+    data_out : out signed(15 downto 0)
+  );
+end filter_component;
+
+architecture Behavioral of filter_component is
+
+  -- Component declarations
+  component filter_rom is
+    Port (
+      addr     : in  unsigned(5 downto 0);
+      data_out : out signed(15 downto 0)
+    );
+  end component;
+
+  component noisy_signal is
+    Port (
+      addr     : in  unsigned(9 downto 0);
+      data_out : out signed(15 downto 0)
+    );
+  end component;
+
+  -- CONSTANTS
+  constant LIMIT_CONST : integer := 50;  -- Number of taps - 1
+
+  -- INTERNAL SIGNALS
+  signal addr_filt : unsigned(5 downto 0)    := (others => '0');
+  signal coeff_out : signed(15 downto 0)     := (others => '0');
+  signal addr_noisy: unsigned(9 downto 0)    := (others => '0');
+  signal noisy_out : signed(15 downto 0)     := (others => '0');
+
+  signal state     : integer range 0 to 1    := 0;  -- 0=IDLE, 1=INIT
+  signal i_count   : integer range 0 to LIMIT_CONST := 0;
+  signal sum_acc   : integer := 0;
+  signal k_var     : integer := 0;
+
+begin
+
+  -- ROM INSTANCES
+  filter_inst_rom: filter_rom
+    port map (
+      addr     => addr_filt,
+      data_out => coeff_out
+    );
+
+  noisy_signal_inst: noisy_signal
+    port map (
+      addr     => addr_noisy,
+      data_out => noisy_out
+    );
+
+  process(clk, reset)
+  begin
+    if reset = '1' then
+      -- Asynchronous reset: initialize all state
+      state    <= 0;  -- IDLE
+      data_out <= (others => '0');
+      addr_filt <= (others => '0');
+      addr_noisy <= (others => '0');
+      i_count  <= 0;
+      sum_acc  <= 0;
+      k_var    <= 0;
+
+    elsif rising_edge(clk) then
+      case state is
+
+        when 0 =>  -- IDLE
+          if en = '1' then
+            -- Start a new MAC cycle
+            i_count <= 0;
+            sum_acc <= 0;
+            state   <= 1;  -- Go to INIT
+          end if;
+
+        when 1 =>  -- INIT (perform one tap per clock)
+          -- Issue addresses to both ROMs
+          addr_filt  <= to_unsigned(i_count, addr_filt'length);
+          addr_noisy <= to_unsigned(i_count + k_var, addr_noisy'length);
+
+          -- Accumulate the previous cycle’s data_out_* (except on first sample)
+          if i_count > 0 then
+            sum_acc <= sum_acc +
+                       (to_integer(coeff_out) * to_integer(noisy_out));
+          end if;
+
+          if i_count = LIMIT_CONST then
+            -- Final tap: include it in sum_acc and produce output
+            sum_acc <= sum_acc +
+                       (to_integer(coeff_out) * to_integer(noisy_out));
+            data_out <= to_signed(sum_acc +
+                                  (to_integer(coeff_out) * to_integer(noisy_out)),
+                                  16);
+
+            -- Prepare for next run
+            i_count  <= 0;
+            k_var    <= k_var + 1;
+            if k_var = 1000 - LIMIT_CONST then
+              state <= 0;  -- Back to IDLE
+              k_var <= 0;  -- optional: wrap k_var
+            else
+              state <= 0;  -- You can choose to stay IDLE or immediately re‐enter INIT
+            end if;
+
+          else
+            -- Move to next tap
+            i_count <= i_count + 1;
+          end if;
+
+      end case;
+    end if;l
+  end process;
+
+end Behavioral;
