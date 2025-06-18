@@ -17,8 +17,5 @@ O objetivo deste trabalho é implementar um transmissor UART (Universal Asynchro
 - Simulação sem erros
 ![Waveform](./images/waveform.png)
 
-- Simulação com erro de paridade
-![Waveform com erro](./images/waveform_error.png)
-
 ### Conclusão
 A implementação do transmissor UART foi bem-sucedida, permitindo a transmissão assíncrona de dados de 8 bits com verificação de paridade e stop bit. A simulação demonstrou o funcionamento correto do emissor e receptor, tanto em condições normais quanto em situações de erro.
