@@ -5,7 +5,6 @@ Este repositório contém os projetos desenvolvidos para a unidade curricular de
 ## Requisitos
 
 - ModelSim (Intel FPGA Edition)
-- Quartus (opcional, para síntese em FPGA)
 
 ## Projetos
 
