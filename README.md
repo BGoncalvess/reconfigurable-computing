@@ -69,7 +69,6 @@ Integração dos módulos desenvolvidos nos TPs anteriores: leitura de dados de 
 ## Organização
 
 - Cada pasta TPx contém o código-fonte, testbenches e documentação específica.
-- A pasta `ModelSim/` contém os projetos de simulação.
 - Documentação adicional encontra-se em `Documentos/` e `Material Aulas/`.
 
 ## Execução
